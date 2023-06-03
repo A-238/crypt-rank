@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use Gateway\CoinMarketCapGateway;
+use App\Gateway\CoinMarketCapGateway;
 use Illuminate\Console\Command;
 
 class SampleCommand extends Command
