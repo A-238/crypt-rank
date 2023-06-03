@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Gateway\CoinMarketCapGateway;
+use App\UseCases\MarketCapitalizationRanking\FetchCommandUseCase;
 use Illuminate\Console\Command;
+use Illuminate\Http\Client\RequestException;
 
 class SampleCommand extends Command
 {
@@ -21,28 +22,25 @@ class SampleCommand extends Command
      *
      * @var string
      */
-    protected $description = '全仮想通貨時価総額ランキングを取得する';
+    protected $description = '暗号通貨時価総額ランキングを取得する';
 
-    private CoinMarketCapGateway $coinMarketCapGateway;
+    private FetchCommandUseCase $fetchCommandUseCase;
 
-    public function __construct(CoinMarketCapGateway $coinMarketCapGateway)
+    public function __construct(FetchCommandUseCase $fetchCommandUseCase)
     {
         parent::__construct();
-        $this->coinMarketCapGateway = $coinMarketCapGateway;
+        $this->fetchCommandUseCase = $fetchCommandUseCase;
     }
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
-        // docker compose exec app php artisan app:sample-command
-        $res = $this->coinMarketCapGateway->get('/v1/cryptocurrency/listings/latest', [
-            'start' => 1,
-            'limit' => 10,
-        ]);
-
-        // TODO: 現在はログ出力のみだが、テーブルへ保存する処理を実装する予定
-        logger()->debug($res);
+        try {
+            $this->fetchCommandUseCase->handle();
+        } catch (RequestException) {
+            logger()->warning('Fetch Market Capitalization Command ERROR!!');
+        }
     }
 }
