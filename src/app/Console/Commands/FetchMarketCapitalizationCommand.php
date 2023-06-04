@@ -8,21 +8,21 @@ use App\UseCases\MarketCapitalizationRanking\FetchCommandUseCase;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\RequestException;
 
-class SampleCommand extends Command
+class FetchMarketCapitalizationCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:sample-command';
+    protected $signature = 'app:fetch-market-capitalization-command';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '暗号通貨時価総額ランキングを取得する';
+    protected $description = '暗号通貨時価総額情報を取得する';
 
     private FetchCommandUseCase $fetchCommandUseCase;
 
@@ -34,6 +34,7 @@ class SampleCommand extends Command
 
     /**
      * Execute the console command.
+     * $ docker compose exec app php artisan app:fetch-market-capitalization-command
      */
     public function handle(): void
     {
