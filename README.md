@@ -9,32 +9,7 @@
     <img src="https://img.shields.io/github/license/ucan-lab/docker-laravel" alt="License">
 </p>
 
-## Introduction
-
-Build a simple laravel development environment with docker-compose. Compatible with Windows(WSL2), macOS(M1) and Linux.
-
-## Usage
-
-### Laravel install
-
-1. Click [Use this template](https://github.com/ucan-lab/docker-laravel/generate)
-2. Git clone & change directory
-3. Execute the following command
-
-```bash
-$ mkdir -p src
-$ docker compose build
-$ docker compose up -d
-$ docker compose exec app composer create-project --prefer-dist laravel/laravel .
-$ docker compose exec app php artisan key:generate
-$ docker compose exec app php artisan storage:link
-$ docker compose exec app chmod -R 777 storage bootstrap/cache
-$ docker compose exec app php artisan migrate
-```
-
-http://localhost
-
-### Laravel setup
+### Setup
 
 1. Git clone & change directory
 2. Execute the following command
