@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * class DigitalCurrency
@@ -15,8 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $symbol シンボル
  * @property float $price 市場価格
  * @property float $market_cap 時価総額
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency whereMarketCap($value)
@@ -24,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency whereSymbol($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class DigitalCurrency extends Model
 {

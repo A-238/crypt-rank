@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * class DigitalCurrencyRankingHistory
@@ -15,9 +17,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $price 市場価格
  * @property int $market_cap 時価総額
  * @property int $ranking 時価総額ランキング
- * @property \Illuminate\Support\Carbon $fetched_date データ取得日
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon $fetched_date データ取得日
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRankingHistory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRankingHistory whereDigitalCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRankingHistory whereFetchedDate($value)
@@ -26,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRankingHistory wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRankingHistory whereRanking($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRankingHistory whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class DigitalCurrencyRankingHistory extends Model
 {

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * class DigitalCurrencyRanking
@@ -13,14 +15,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $digital_currency_id
  * @property int $ranking 時価総額ランキング
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRanking whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRanking whereDigitalCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRanking whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRanking whereRanking($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRanking whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class DigitalCurrencyRanking extends Model
 {
