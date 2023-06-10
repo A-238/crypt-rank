@@ -23,7 +23,6 @@ class DigitalCurrency extends Model
         'symbol',
         'price',
         'market_cap',
-        'market_cap_rank',
     ];
 
     /**
@@ -36,6 +35,5 @@ class DigitalCurrency extends Model
         'symbol' => 'string',
         'price' => 'double',
         'market_cap' => 'double',
-        'market_cap_rank' => 'integer',
     ];
 }
