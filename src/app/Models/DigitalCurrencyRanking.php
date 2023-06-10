@@ -10,6 +10,17 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency query()
+ * @property int $id
+ * @property int $digital_currency_id
+ * @property int $ranking 時価総額ランキング
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRanking whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRanking whereDigitalCurrencyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRanking whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRanking whereRanking($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrencyRanking whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class DigitalCurrencyRanking extends Model
 {
