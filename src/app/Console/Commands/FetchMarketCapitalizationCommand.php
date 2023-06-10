@@ -68,7 +68,7 @@ class FetchMarketCapitalizationCommand extends Command
 
     /**
      * Execute the console command.
-     * $ docker compose exec app php artisan app:fetch-market-capitalization-command
+     * $ docker compose exec app php artisan app:fetch-market-capitalization 1 10
      */
     public function handle(): void
     {

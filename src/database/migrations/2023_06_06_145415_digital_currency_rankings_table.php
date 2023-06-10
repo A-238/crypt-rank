@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('digital_currencies', function (Blueprint $table) {
+        Schema::create('digital_currency_rankings', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->comment('通貨名');
-            $table->string('symbol')->comment('シンボル');
-            $table->decimal('price', 20, 8)->comment('市場価格');
-            $table->decimal('market_cap', 20, 8)->comment('時価総額');
+            $table->foreignId('digital_currency_id')->constrained('digital_currencies');
+            $table->integer('ranking')->comment('時価総額ランキング');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('digital_currencies');
+        Schema::dropIfExists('digital_currency_rankings');
     }
 };

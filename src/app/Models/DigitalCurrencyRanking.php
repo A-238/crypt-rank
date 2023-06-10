@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * class DigitalCurrency
+ * class DigitalCurrencyRanking
  *
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency query()
  */
-class DigitalCurrency extends Model
+class DigitalCurrencyRanking extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -19,10 +19,8 @@ class DigitalCurrency extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'symbol',
-        'price',
-        'market_cap',
+        'digital_currency_id',
+        'ranking',
     ];
 
     /**
@@ -31,9 +29,7 @@ class DigitalCurrency extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'name' => 'string',
-        'symbol' => 'string',
-        'price' => 'double',
-        'market_cap' => 'double',
+        'digital_currency_id' => 'integer',
+        'ranking' => 'integer',
     ];
 }
