@@ -46,6 +46,7 @@ class FetchCommandUseCase implements UseCaseInterface
     public function handle(int $start, int $limit): void
     {
         $digitalCurrenciesResponse = collect();
+
         $digitalCurrenciesResponse->push($this->coinMarketCapGateway->get('/v1/cryptocurrency/listings/latest', [
             'start' => $start,
             'limit' => $limit,
@@ -55,15 +56,13 @@ class FetchCommandUseCase implements UseCaseInterface
 
         DB::transaction(function () use ($digitalCurrenciesResponse) {
 
-            $this->digitalCurrencyRanking->newQuery()->delete();
-
-            $this->digitalCurrencyRankingHistory->newQuery()
-                ->where(['fetched_date' => $this->today])
-                ->delete();
+            // 最新ランキングと実行日と同日のランキングを削除しておく
+            $this->digitalCurrencyRanking->delete();
+            $this->digitalCurrencyRankingHistory->where(['fetched_date' => $this->today])->delete();
 
             $digitalCurrenciesResponse->each(function (Response $response) {
                 foreach ($response->object()->data as $digitalCurrency) {
-                    $this->digitalCurrency->newQuery()->updateOrinsert(
+                    $this->digitalCurrency->updateOrinsert(
                         [
                             'symbol' => $digitalCurrency->symbol
                         ],
@@ -79,20 +78,19 @@ class FetchCommandUseCase implements UseCaseInterface
                     $lastInsertOrUpdateId = DB::getPdo()->lastInsertId();
                     if (!$lastInsertOrUpdateId) {
                         $lastInsertOrUpdateId = $this->digitalCurrency
-                            ->newQuery()
                             ->select('id')
                             ->where(['symbol' => $digitalCurrency->symbol])
                             ->get()->first()->id;
                     }
 
-                    $this->digitalCurrencyRanking->newQuery()->insert(
+                    $this->digitalCurrencyRanking->insert(
                         [
                             'digital_currency_id' => $lastInsertOrUpdateId,
                             'ranking' => $digitalCurrency->cmc_rank,
                         ]
                     );
 
-                    $this->digitalCurrencyRankingHistory->newQuery()->insert(
+                    $this->digitalCurrencyRankingHistory->insert(
                         [
                             'digital_currency_id' => $lastInsertOrUpdateId,
                             'price' => $digitalCurrency->quote->USD->price,
