@@ -22,6 +22,8 @@ class FetchCommandUseCase implements UseCaseInterface
 
     private DigitalCurrencyRankingHistory $digitalCurrencyRankingHistory;
 
+    private Carbon $today;
+
     public function __construct(
         CoinMarketCapGateway $coinMarketCapGateway,
         DigitalCurrency $digitalCurrency,
@@ -36,6 +38,8 @@ class FetchCommandUseCase implements UseCaseInterface
     }
 
     /**
+     * @param int $start
+     * @param int $limit
      * @return void
      * @throws RequestException
      */
@@ -47,53 +51,58 @@ class FetchCommandUseCase implements UseCaseInterface
             'limit' => $limit,
         ]));
 
-        $this->digitalCurrencyRanking->newQuery()->delete();
+        $this->today = Carbon::today();
 
-        // TODO: トランザクションかける
-        $digitalCurrenciesResponse->each(function (Response $response) {
-            foreach ($response->object()->data as $digitalCurrency) {
-                $this->digitalCurrency->newQuery()->updateOrinsert(
-                    [
-                        'symbol' => $digitalCurrency->symbol
-                    ],
-                    [
-                        'name' => $digitalCurrency->name,
-                        'symbol' => $digitalCurrency->symbol,
-                        'price' => $digitalCurrency->quote->USD->price,
-                        'market_cap' => $digitalCurrency->quote->USD->market_cap,
-                    ]
-                );
+        DB::transaction(function () use ($digitalCurrenciesResponse) {
 
-                // TODO: もっとすっきりかけないか？一発で取得できるメソッドなどないか
-                $lastInsertOrUpdateId = DB::getPdo()->lastInsertId();
-                if (!$lastInsertOrUpdateId) {
-                    $lastInsertOrUpdateId = $this->digitalCurrency
-                        ->newQuery()
-                        ->select('id')
-                        ->where(['symbol' => $digitalCurrency->symbol])
-                        ->get()->first()->id;
+            $this->digitalCurrencyRanking->newQuery()->delete();
+
+            $this->digitalCurrencyRankingHistory->newQuery()
+                ->where(['fetched_date' => $this->today])
+                ->delete();
+
+            $digitalCurrenciesResponse->each(function (Response $response) {
+                foreach ($response->object()->data as $digitalCurrency) {
+                    $this->digitalCurrency->newQuery()->updateOrinsert(
+                        [
+                            'symbol' => $digitalCurrency->symbol
+                        ],
+                        [
+                            'name' => $digitalCurrency->name,
+                            'symbol' => $digitalCurrency->symbol,
+                            'price' => $digitalCurrency->quote->USD->price,
+                            'market_cap' => $digitalCurrency->quote->USD->market_cap,
+                        ]
+                    );
+
+                    // TODO: もっとすっきりかけないか？一発で取得できるメソッドなどないか
+                    $lastInsertOrUpdateId = DB::getPdo()->lastInsertId();
+                    if (!$lastInsertOrUpdateId) {
+                        $lastInsertOrUpdateId = $this->digitalCurrency
+                            ->newQuery()
+                            ->select('id')
+                            ->where(['symbol' => $digitalCurrency->symbol])
+                            ->get()->first()->id;
+                    }
+
+                    $this->digitalCurrencyRanking->newQuery()->insert(
+                        [
+                            'digital_currency_id' => $lastInsertOrUpdateId,
+                            'ranking' => $digitalCurrency->cmc_rank,
+                        ]
+                    );
+
+                    $this->digitalCurrencyRankingHistory->newQuery()->insert(
+                        [
+                            'digital_currency_id' => $lastInsertOrUpdateId,
+                            'price' => $digitalCurrency->quote->USD->price,
+                            'market_cap' => $digitalCurrency->quote->USD->market_cap,
+                            'ranking' => $digitalCurrency->cmc_rank,
+                            'fetched_date' => $this->today,
+                        ]
+                    );
                 }
-
-                $this->digitalCurrencyRanking->newQuery()->insert(
-                    [
-                        'digital_currency_id' => $lastInsertOrUpdateId,
-                        'ranking' => $digitalCurrency->cmc_rank,
-                    ]
-                );
-
-                $today = Carbon::today();
-                // TODO: 日付で全削除しておく？
-
-                $this->digitalCurrencyRankingHistory->newQuery()->insert(
-                    [
-                        'digital_currency_id' => $lastInsertOrUpdateId,
-                        'price' => $digitalCurrency->quote->USD->price,
-                        'market_cap' => $digitalCurrency->quote->USD->market_cap,
-                        'ranking' => $digitalCurrency->cmc_rank,
-                        'fetched_date' => $today,
-                    ]
-                );
-            }
+            });
         });
     }
 }
