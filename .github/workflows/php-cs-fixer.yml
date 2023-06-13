@@ -22,7 +22,7 @@ jobs:
         run: |
           git config --local pull.rebase false
       - name: ディレクトリ移動
-        run: cd ./src
+        run: cd /home/runner/work/digital-currency-insight-api/digital-currency-insight-api/src
       - name: composerからライブラリをインストール
         run: composer install -n --prefer-dist
       - name: php-cs-fixerを実行
