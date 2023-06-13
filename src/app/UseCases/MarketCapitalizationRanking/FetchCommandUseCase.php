@@ -31,8 +31,7 @@ class FetchCommandUseCase implements UseCaseInterface
         DigitalCurrency $digitalCurrency,
         DigitalCurrencyRanking $digitalCurrencyRanking,
         DigitalCurrencyRankingHistory $digitalCurrencyRankingHistory
-    )
-    {
+    ) {
         $this->coinMarketCapGateway = $coinMarketCapGateway;
         $this->digitalCurrency = $digitalCurrency;
         $this->digitalCurrencyRanking = $digitalCurrencyRanking;
