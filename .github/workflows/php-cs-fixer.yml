@@ -21,10 +21,10 @@ jobs:
       - name: pullのルールを設定
         run: |
           git config --local pull.rebase false
+      - name: ディレクトリ移動
+        run: cd ./src
       - name: composerからライブラリをインストール
-        run:
-          cd src
-          composer install -n --prefer-dist
+        run: composer install -n --prefer-dist
       - name: php-cs-fixerを実行
         run: vendor/bin/php-cs-fixer fix
       - name: commitしてGitHubへpush
