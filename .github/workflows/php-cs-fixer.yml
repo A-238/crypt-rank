@@ -1,0 +1,42 @@
+name: PHP-CS-Fixer
+on:
+  push:
+    branches:
+      - 'feature/*'
+jobs:
+  php-cs-fixer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@master
+      - name: PHPのバージョンを固定
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: '8.1'
+      - name: gitコミッター情報を設定
+        run: |
+          git config --local user.email "example@example.com"
+          git config --local user.name "PHP-CS-Fixer"
+      # @see https://blog.agile.esm.co.jp/entry/git-warns-pulling-without-specifying-how-to-reconcile-divergent-branches
+      - name: pullのルールを設定
+        run: |
+          git config --local pull.rebase false
+      - name: composerからライブラリをインストール
+        run: |
+          cd /home/runner/work/digital-currency-insight-api/digital-currency-insight-api/src
+          composer install -n --prefer-dist
+      - name: php-cs-fixerを実行
+        run: |
+          cd /home/runner/work/digital-currency-insight-api/digital-currency-insight-api/src
+          vendor/bin/php-cs-fixer fix
+      - name: commitしてGitHubへpush
+        run: |
+          line=`git diff | wc -l`
+          if [ $line -eq 0 ]; then
+            echo "コミット終了"
+            exit 0
+          fi
+          git add .
+          git commit -m "run php-cs-fixer" -a
+          git pull
+          git push origin HEAD
