@@ -26,7 +26,9 @@ jobs:
           cd /home/runner/work/digital-currency-insight-api/digital-currency-insight-api/src
           composer install -n --prefer-dist
       - name: php-cs-fixerを実行
-        run: vendor/bin/php-cs-fixer fix
+        run: |
+          cd /home/runner/work/digital-currency-insight-api/digital-currency-insight-api/src
+          vendor/bin/php-cs-fixer fix
       - name: commitしてGitHubへpush
         run: |
           line=`git diff | wc -l`
