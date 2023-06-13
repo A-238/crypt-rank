@@ -21,6 +21,7 @@ jobs:
       - name: pullのルールを設定
         run: |
           git config --local pull.rebase false
+          cd src
       - name: composerからライブラリをインストール
         run: composer install -n --prefer-dist
       - name: php-cs-fixerを実行
