@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -55,4 +56,12 @@ class DigitalCurrency extends Model
         'price' => 'double',
         'market_cap' => 'double',
     ];
+
+    /**
+     * @return HasMany
+     */
+    public function digitalCurrencyRankings(): HasMany
+    {
+        return $this->hasMany(DigitalCurrencyRanking::class);
+    }
 }

@@ -18,4 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/digital_currency-rankings', \App\Http\Controllers\DigitalCurrencyRankings\IndexController::class)->name('DigitalCurrencyRankingsIndex');
+Route::get('/digital-currency-rankings', \App\Http\Controllers\DigitalCurrencyRankings\IndexController::class)->name('DigitalCurrencyRankingsIndex');
