@@ -24,10 +24,12 @@ class DigitalCurrencyRankingsFetcher
     }
 
     /**
+     * @param int|null $limit
+     * @param string|null $sort
      * @return Collection
      */
-    public function fetch(): Collection
+    public function fetch(?int $limit, ?string $sort): Collection
     {
-        return $this->digitalCurrencyRanking->orderBy('ranking')->get();
+        return $this->digitalCurrencyRanking->orderBy('ranking', $sort)->limit($limit)->get();
     }
 }

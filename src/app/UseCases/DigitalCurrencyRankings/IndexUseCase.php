@@ -24,10 +24,12 @@ class IndexUseCase implements UseCaseInterface
     }
 
     /**
+     * @param int|null $limit
+     * @param string|null $sort
      * @return Collection
      */
-    public function handle(): Collection
+    public function handle(?int $limit, ?string $sort): Collection
     {
-        return $this->digitalCurrencyRankingsFetcher->fetch();
+        return $this->digitalCurrencyRankingsFetcher->fetch($limit, $sort);
     }
 }
