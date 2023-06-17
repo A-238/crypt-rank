@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -47,4 +48,12 @@ class DigitalCurrencyRanking extends Model
         'digital_currency_id' => 'integer',
         'ranking' => 'integer',
     ];
+
+    /**
+     * @return BelongsTo
+     */
+    public function digitalCurrency(): BelongsTo
+    {
+        return $this->belongsTo(DigitalCurrency::class);
+    }
 }
