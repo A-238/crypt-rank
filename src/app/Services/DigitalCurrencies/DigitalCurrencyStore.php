@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\DigitalCurrencies;
 
 use App\Models\DigitalCurrency;
@@ -26,7 +28,7 @@ class DigitalCurrencyStore
      */
     public function updateOrInsert(Collection $formattedDigitalCurrency): void
     {
-        $this->digitalCurrency->updateOrinsert(
+        $this->digitalCurrency->updateOrInsert(
             [
                 'symbol' => $formattedDigitalCurrency->get('symbol')
             ],

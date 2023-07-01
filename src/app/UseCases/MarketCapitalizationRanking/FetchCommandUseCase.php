@@ -104,7 +104,7 @@ class FetchCommandUseCase implements UseCaseInterface
             $digitalCurrenciesResponse->each(function (Response $response) {
                 foreach ($response->object()->data as $digitalCurrency) {
                     $receiver = $this->digitalCurrenciesReceiver->set($digitalCurrency)->format();
-                    $this->digitalCurrencyStore->updateOrinsert($receiver->get());
+                    $this->digitalCurrencyStore->updateOrInsert($receiver->get());
 
                     // TODO: もっとすっきりかけないか？一発で取得できるメソッドなどないか
                     $lastInsertOrUpdateId = DB::getPdo()->lastInsertId();
