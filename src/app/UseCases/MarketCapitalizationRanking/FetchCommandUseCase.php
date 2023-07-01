@@ -8,6 +8,8 @@ use App\Gateway\CoinMarketCapGateway;
 use App\Models\DigitalCurrency;
 use App\Models\DigitalCurrencyRanking;
 use App\Models\DigitalCurrencyRankingHistory;
+use App\Services\DigitalCurrencies\DigitalCurrenciesReceiver;
+use App\Services\DigitalCurrencies\DigitalCurrencyStore;
 use App\UseCases\UseCaseInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Client\RequestException;
@@ -16,26 +18,63 @@ use Illuminate\Support\Facades\DB;
 
 class FetchCommandUseCase implements UseCaseInterface
 {
+    /**
+     * @var CoinMarketCapGateway
+     */
     private CoinMarketCapGateway $coinMarketCapGateway;
 
+    /**
+     * @var DigitalCurrency
+     */
     private DigitalCurrency $digitalCurrency;
 
+    /**
+     * @var DigitalCurrencyRanking
+     */
     private DigitalCurrencyRanking $digitalCurrencyRanking;
 
+    /**
+     * @var DigitalCurrencyRankingHistory
+     */
     private DigitalCurrencyRankingHistory $digitalCurrencyRankingHistory;
 
+    /**
+     * @var DigitalCurrenciesReceiver
+     */
+    private DigitalCurrenciesReceiver $digitalCurrenciesReceiver;
+
+    /**
+     * @var DigitalCurrencyStore
+     */
+    private DigitalCurrencyStore $digitalCurrencyStore;
+
+    /**
+     * @var Carbon
+     */
     private Carbon $today;
 
+    /**
+     * @param CoinMarketCapGateway $coinMarketCapGateway
+     * @param DigitalCurrency $digitalCurrency
+     * @param DigitalCurrencyRanking $digitalCurrencyRanking
+     * @param DigitalCurrencyRankingHistory $digitalCurrencyRankingHistory
+     * @param DigitalCurrenciesReceiver $digitalCurrenciesReceiver
+     * @param DigitalCurrencyStore $digitalCurrencyStore
+     */
     public function __construct(
         CoinMarketCapGateway $coinMarketCapGateway,
         DigitalCurrency $digitalCurrency,
         DigitalCurrencyRanking $digitalCurrencyRanking,
-        DigitalCurrencyRankingHistory $digitalCurrencyRankingHistory
+        DigitalCurrencyRankingHistory $digitalCurrencyRankingHistory,
+        DigitalCurrenciesReceiver $digitalCurrenciesReceiver,
+        DigitalCurrencyStore $digitalCurrencyStore
     ) {
         $this->coinMarketCapGateway = $coinMarketCapGateway;
         $this->digitalCurrency = $digitalCurrency;
         $this->digitalCurrencyRanking = $digitalCurrencyRanking;
         $this->digitalCurrencyRankingHistory = $digitalCurrencyRankingHistory;
+        $this->digitalCurrenciesReceiver = $digitalCurrenciesReceiver;
+        $this->digitalCurrencyStore = $digitalCurrencyStore;
     }
 
     /**
@@ -58,22 +97,14 @@ class FetchCommandUseCase implements UseCaseInterface
         DB::transaction(function () use ($digitalCurrenciesResponse) {
 
             // 最新ランキングと実行日と同日のランキングを削除しておく
+            // FIXME: 最新ランキングの削除が効いていない
             $this->digitalCurrencyRanking->delete();
             $this->digitalCurrencyRankingHistory->where(['fetched_date' => $this->today])->delete();
 
             $digitalCurrenciesResponse->each(function (Response $response) {
                 foreach ($response->object()->data as $digitalCurrency) {
-                    $this->digitalCurrency->updateOrinsert(
-                        [
-                            'symbol' => $digitalCurrency->symbol
-                        ],
-                        [
-                            'name' => $digitalCurrency->name,
-                            'symbol' => $digitalCurrency->symbol,
-                            'price' => $digitalCurrency->quote->USD->price,
-                            'market_cap' => $digitalCurrency->quote->USD->market_cap,
-                        ]
-                    );
+                    $receiver = $this->digitalCurrenciesReceiver->set($digitalCurrency)->format();
+                    $this->digitalCurrencyStore->updateOrinsert($receiver->get());
 
                     // TODO: もっとすっきりかけないか？一発で取得できるメソッドなどないか
                     $lastInsertOrUpdateId = DB::getPdo()->lastInsertId();
