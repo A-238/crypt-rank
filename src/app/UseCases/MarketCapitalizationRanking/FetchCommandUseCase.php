@@ -104,27 +104,18 @@ class FetchCommandUseCase implements UseCaseInterface
             $digitalCurrenciesResponse->each(function (Response $response) {
                 foreach ($response->object()->data as $digitalCurrency) {
                     $receiver = $this->digitalCurrenciesReceiver->set($digitalCurrency)->format();
-                    $this->digitalCurrencyStore->updateOrInsert($receiver->get());
-
-                    // TODO: もっとすっきりかけないか？一発で取得できるメソッドなどないか
-                    $lastInsertOrUpdateId = DB::getPdo()->lastInsertId();
-                    if (!$lastInsertOrUpdateId) {
-                        $lastInsertOrUpdateId = $this->digitalCurrency
-                            ->select('id')
-                            ->where(['symbol' => $digitalCurrency->symbol])
-                            ->get()->first()->id;
-                    }
+                    $digitalCurrencyId = $this->digitalCurrencyStore->updateOrInsert($receiver->get());
 
                     $this->digitalCurrencyRanking->insert(
                         [
-                            'digital_currency_id' => $lastInsertOrUpdateId,
+                            'digital_currency_id' => $digitalCurrencyId,
                             'ranking' => $digitalCurrency->cmc_rank,
                         ]
                     );
 
                     $this->digitalCurrencyRankingHistory->insert(
                         [
-                            'digital_currency_id' => $lastInsertOrUpdateId,
+                            'digital_currency_id' => $digitalCurrencyId,
                             'price' => $digitalCurrency->quote->USD->price,
                             'market_cap' => $digitalCurrency->quote->USD->market_cap,
                             'ranking' => $digitalCurrency->cmc_rank,

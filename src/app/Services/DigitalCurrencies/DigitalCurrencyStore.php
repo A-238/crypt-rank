@@ -24,9 +24,9 @@ class DigitalCurrencyStore
 
     /**
      * @param Collection $formattedDigitalCurrency
-     * @return void
+     * @return int 暗合通貨ID
      */
-    public function updateOrInsert(Collection $formattedDigitalCurrency): void
+    public function updateOrInsert(Collection $formattedDigitalCurrency): int
     {
         $this->digitalCurrency->updateOrInsert(
             [
@@ -39,5 +39,9 @@ class DigitalCurrencyStore
                 'market_cap' => $formattedDigitalCurrency->get('market_cap'),
             ]
         );
+
+        return $this->digitalCurrency
+            ->where(['symbol' => $formattedDigitalCurrency->get('symbol')])
+            ->value('id');
     }
 }

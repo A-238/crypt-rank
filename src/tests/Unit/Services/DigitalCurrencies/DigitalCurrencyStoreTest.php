@@ -9,9 +9,6 @@ use App\Services\DigitalCurrencies\DigitalCurrencyStore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-/**
- * docker compose exec app php artisan test tests/Unit/Services/DigitalCurrencies/DigitalCurrencyStoreTest.php
- */
 class DigitalCurrencyStoreTest extends TestCase
 {
     use RefreshDatabase;
@@ -30,9 +27,9 @@ class DigitalCurrencyStoreTest extends TestCase
     /**
      * @test
      */
-    public function 既存のデータが存在しないときにupdateOrInsertを実行し、データが新規登録されることを検証する(): void
+    public function 既存のデータが存在しないときにupdateOrInsertを実行するとデータが新規登録され、登録されたデータのIDが返ることを検証する(): void
     {
-        $this->digitalCurrencyStore->updateOrInsert(collect([
+        $digitalCurrencyId = $this->digitalCurrencyStore->updateOrInsert(collect([
             'symbol' => 'TEST',
             'name' => 'test',
             'price' => 100,
@@ -40,6 +37,7 @@ class DigitalCurrencyStoreTest extends TestCase
         ]));
 
         $this->assertDatabaseHas('digital_currencies', [
+            'id' => $digitalCurrencyId,
             'symbol' => 'TEST',
             'name' => 'test',
             'price' => 100,
@@ -50,22 +48,23 @@ class DigitalCurrencyStoreTest extends TestCase
     /**
      * @test
      */
-    public function 既存のデータが存在するときにupdateOrInsertを実行し、データが更新されることを検証する(): void
+    public function 既存のデータが存在するときにupdateOrInsertを実行するとデータが更新され、更新されたデータのIDが返ることを検証する(): void
     {
         DigitalCurrency::factory()->create([
+            'id' => 2,
             'symbol' => 'TEST',
             'name' => 'test',
         ]);
 
-        $this->digitalCurrencyStore->updateOrInsert(collect([
+        $digitalCurrencyId = $this->digitalCurrencyStore->updateOrInsert(collect([
             'symbol' => 'TEST',
             'name' => 'test_update',
             'price' => 100,
             'market_cap' => 10000,
         ]));
 
+        $this->assertSame(2, $digitalCurrencyId);
         $this->assertSame(1, DigitalCurrency::count());
-
         $this->assertDatabaseHas('digital_currencies', [
             'symbol' => 'TEST',
             'name' => 'test_update',
