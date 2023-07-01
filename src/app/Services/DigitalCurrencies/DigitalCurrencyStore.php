@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\DigitalCurrencies;
 
 use App\Models\DigitalCurrency;
@@ -22,11 +24,11 @@ class DigitalCurrencyStore
 
     /**
      * @param Collection $formattedDigitalCurrency
-     * @return void
+     * @return int 暗合通貨ID
      */
-    public function updateOrInsert(Collection $formattedDigitalCurrency): void
+    public function updateOrInsert(Collection $formattedDigitalCurrency): int
     {
-        $this->digitalCurrency->updateOrinsert(
+        $this->digitalCurrency->updateOrInsert(
             [
                 'symbol' => $formattedDigitalCurrency->get('symbol')
             ],
@@ -37,5 +39,9 @@ class DigitalCurrencyStore
                 'market_cap' => $formattedDigitalCurrency->get('market_cap'),
             ]
         );
+
+        return $this->digitalCurrency
+            ->where(['symbol' => $formattedDigitalCurrency->get('symbol')])
+            ->value('id');
     }
 }

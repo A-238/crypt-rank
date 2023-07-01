@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
@@ -30,9 +31,12 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency whereSymbol($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DigitalCurrency whereUpdatedAt($value)
  * @mixin Eloquent
+ * @method static \Database\Factories\DigitalCurrencyFactory factory(...$parameters)
  */
 class DigitalCurrency extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
